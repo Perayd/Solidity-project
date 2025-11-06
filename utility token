@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract SimpleToken is ERC20Capped, Ownable {
+    constructor(
+        string memory name_,
+        string memory symbol_,
+        uint256 cap_
+    ) ERC20(name_, symbol_) ERC20Capped(cap_) {}
+
+    /// @notice Owner can mint until cap is reached
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+
+    /// @notice Allow owner to burn tokens (utility: e.g. buyback)
+    function burn(address from, uint256 amount) external onlyOwner {
+        _burn(from, amount);
+    }
+
+    // ERC20Capped overrides _mint to enforce cap; nothing else needed.
+}
